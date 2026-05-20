@@ -187,6 +187,19 @@ module.exports = grammar({
         token(prec(1, "}}")),
       ),
 
+    handlebars_expr: ($) =>
+      seq(
+        field("helper", $.identifier),
+        repeat(seq(WS, field("argument", choice($.identifier, $.string, $.number))))
+      ),
+
+    string: (_) => choice(
+      seq('"', repeat(/[^"\\]/), '"'),
+      seq("'", repeat(/[^'\\]/), "'")
+    ),
+
+    number: (_) => /\d+/,
+
     pre_request_script: ($) =>
       seq("<", WS, choice($.script, $.path), token(repeat1(NL))),
     res_handler_script: ($) =>
